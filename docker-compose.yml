@@ -1,0 +1,43 @@
+version: '2.0'
+services:
+ config-service:
+    build: ./config-service
+    container_name: my-config-server
+    ports:
+        - "8888:8888"
+    networks:
+        - my-network 
+ 
+ discovery-service:
+    build: ./discovery-service
+    container_name: discovery
+    ports: 
+        - "8761:8761"
+    depends_on: 
+        - config-service
+    networks:
+        - my-network
+
+ product-service:
+    build: ./product-service
+    container_name: product
+    ports: 
+        - "8080:8080"
+    depends_on: 
+        - config-service
+    networks:
+        - my-network
+
+ proxy-service:
+    build: ./proxy-service
+    container_name: proxy
+    ports: 
+        - "9999:9999"
+    depends_on: 
+        - config-service
+    networks:
+        - my-network
+
+networks:
+    my-network:
+       driver: bridge
